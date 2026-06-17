@@ -17,5 +17,5 @@ class ChunkResult(BaseModel):
     chunk_strategy: str = ""
     parent_chunk_id: str | None = None
     chunk_embedding: list[float] | None = None
-    full_page_embedding: list[float] | None = None
+    full_document_embedding: list[float] | None = None
     reason: str | None = None

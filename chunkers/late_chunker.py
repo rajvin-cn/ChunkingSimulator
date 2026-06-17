@@ -42,7 +42,7 @@ class LateChunker(BaseChunker):
                     source_uri=page.source_uri,
                     chunk_strategy="late",
                     chunk_embedding=cv,
-                    full_page_embedding=full_doc_vec,
+                    full_document_embedding=full_doc_vec,
                 ))
                 chunk_index += 1
         return results

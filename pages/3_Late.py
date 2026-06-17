@@ -22,7 +22,7 @@ st.markdown(progress_bar_css(ACCENT), unsafe_allow_html=True)
 st.markdown(
     page_header_html(
         "Late Chunker",
-        "Embed full page first, then chunk with dual context-aware vectors",
+        "Embed full document first, then chunk with dual context-aware vectors",
         icon_name="brain",
         accent=ACCENT,
     ),
@@ -42,13 +42,13 @@ with st.expander("How it works", expanded=True):
          "content": "<code>chunk_size</code> + Embedder + text"},
         {"title": "⚙️ How it works",
          "content": "<ol>"
-                    "<li>Embed the entire page as a full-page vector</li>"
+                    "<li>Embed the entire document as a full-document vector</li>"
                     "<li>Split into chunks (~chunk_size tokens)</li>"
                     "<li>Embed each chunk separately</li>"
-                    "<li>Each chunk gets two vectors: chunk_embedding + full_page_embedding</li>"
+                    "<li>Each chunk gets two vectors: chunk_embedding + full_document_embedding</li>"
                     "</ol>"},
         {"title": "📤 Output",
-         "content": "<code>list[ChunkResult]</code> — flat, each with pre-computed chunk_embedding + full_page_embedding."},
+          "content": "<code>list[ChunkResult]</code> — flat, each with pre-computed chunk_embedding + full_document_embedding."},
     ], STRATEGY), unsafe_allow_html=True)
 
 with st.expander("Parameters", expanded=True):
@@ -70,7 +70,7 @@ with st.spinner():
 sample_placeholder.empty()
 dim_display = f"{len(sample_vec)}-dim"
 
-STEP_LABELS = ["Load Document", "Split Sentences", "Embed Full Page", "Split Chunks", "Embed Chunks", "Final Output"]
+STEP_LABELS = ["Load Document", "Split Sentences", "Embed Full Document", "Split Chunks", "Embed Chunks", "Final Output"]
 P = "late_"
 
 _input_hash = hash(input_text)
@@ -116,7 +116,7 @@ if len(sentences) < 1:
 
 def run_all():
     p1 = st.empty()
-    p1.markdown(loading_placeholder_html("Embedding full page...", ACCENT,
+    p1.markdown(loading_placeholder_html("Embedding full document...", ACCENT,
                                          "Encoding the complete document as a single vector"),
                 unsafe_allow_html=True)
     with st.spinner():
@@ -136,7 +136,7 @@ def run_all():
         results.append({
             "chunk_text": ct,
             "chunk_embedding": cv,
-            "full_page_embedding": full_vector,
+            "full_document_embedding": full_vector,
             "token_count": chunker.count_tokens(ct),
         })
     st.session_state[f"{P}_results"] = results
@@ -210,14 +210,14 @@ if mode == "Auto" and not results_done:
 st.markdown("---")
 
 # ── STEP 3: Embed Full Page ────────────────────────────────────────
-st.markdown(step_header_html(3, "Embed Full Page Once",
+st.markdown(step_header_html(3, "Embed Full Document Once",
                               "completed" if full_vec_done else "active", ACCENT, "globe"), unsafe_allow_html=True)
 
 if mode == "Developer":
     if not full_vec_done:
-        if st.button("Embed Full Page", type="primary", use_container_width=True, key="late_embed_full"):
+        if st.button("Embed Full Document", type="primary", use_container_width=True, key="late_embed_full"):
             p = st.empty()
-            p.markdown(loading_placeholder_html("Embedding full page...", ACCENT,
+            p.markdown(loading_placeholder_html("Embedding full document...", ACCENT,
                                                 "Encoding the complete document as a single vector"),
                        unsafe_allow_html=True)
             with st.spinner():
@@ -228,8 +228,8 @@ if mode == "Developer":
 
 full_vec = st.session_state.get(f"{P}_full_vec")
 if full_vec:
-    st.code(f"full_page_embedding = {vector_preview(full_vec)}", language="text")
-    st.caption("This single vector captures the **entire page** meaning.")
+    st.code(f"full_document_embedding = {vector_preview(full_vec)}", language="text")
+    st.caption("This single vector captures the **entire document** meaning.")
 
 if full_vec_done:
     st.markdown(completion_arrow_html(), unsafe_allow_html=True)
@@ -280,7 +280,7 @@ if mode == "Developer":
                     results.append({
                         "chunk_text": ct,
                         "chunk_embedding": cv,
-                        "full_page_embedding": full_vec,
+                        "full_document_embedding": full_vec,
                         "token_count": chunker.count_tokens(ct),
                     })
                 st.session_state[f"{P}_results"] = results
@@ -324,7 +324,7 @@ if results:
                 "page_number": 0,
                 "source_uri": None,
                 "chunk_embedding": vector_preview(r["chunk_embedding"]),
-                "full_page_embedding": vector_preview(r["full_page_embedding"]),
+                "full_document_embedding": vector_preview(r["full_document_embedding"]),
             }
         ) for i, r in enumerate(display)
     ))

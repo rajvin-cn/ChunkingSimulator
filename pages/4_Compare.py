@@ -129,7 +129,7 @@ if "comp_results" in st.session_state:
                             chunks = merge_small_chunks(
                                 [{"chunk_text": r.chunk_text, "token_count": r.token_count,
                                   "chunk_embedding": getattr(r, "chunk_embedding", None),
-                                  "full_page_embedding": getattr(r, "full_page_embedding", None)}
+                                   "full_document_embedding": getattr(r, "full_document_embedding", None)}
                                  for r in chunks], min_tok) if chunks else []
                         else:
                             chunks = list(merge_small_chunks(
@@ -221,7 +221,7 @@ if "comp_results" in st.session_state:
                             extra = {"chunk_index": idx, "token_count": c["token_count"], "chunk_strategy": name,
                                      "page_number": 0, "source_uri": None}
                             extra["chunk_embedding"] = c.get("chunk_embedding", "N/A")
-                            extra["full_page_embedding"] = c.get("full_page_embedding", "N/A")
+                            extra["full_document_embedding"] = c.get("full_document_embedding", "N/A")
                             extra["reason"] = c.get("reason", None)
                             cards.append(chunk_card_html(
                                 idx=idx, chunk_text=c["chunk_text"], token_count=c["token_count"],
