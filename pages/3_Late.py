@@ -120,7 +120,7 @@ def run_all():
                                          "Encoding the complete document as a single vector"),
                 unsafe_allow_html=True)
     with st.spinner():
-        full_vector = chunker._embed_full_page(input_text)
+        full_vector = chunker._embed_full_document(input_text)
     p1.empty()
     st.session_state[f"{P}_full_vec"] = full_vector
     buffers = split_chunks()
@@ -221,7 +221,7 @@ if mode == "Developer":
                                                 "Encoding the complete document as a single vector"),
                        unsafe_allow_html=True)
             with st.spinner():
-                full_vector = chunker._embed_full_page(input_text)
+                full_vector = chunker._embed_full_document(input_text)
             st.session_state[f"{P}_full_vec"] = full_vector
             p.empty()
             st.rerun()

@@ -9,14 +9,15 @@ class LateChunker(BaseChunker):
         self.embedder = embedder
         self.chunk_size = chunk_size
 
-    def _embed_full_page(self, text: str) -> list[float]:
+    def _embed_full_document(self, text: str) -> list[float]:
         return self.embedder.embed([text])[0]
 
     def chunk(self, pages: list[ParsedPage]) -> list[ChunkResult]:
         results: list[ChunkResult] = []
         chunk_index = 0
+        full_doc_text = "\n\n".join(p.content for p in pages)
+        full_doc_vec = self._embed_full_document(full_doc_text)
         for page in pages:
-            full_embedding = self._embed_full_page(page.content)
             sentences = self._split_sentences(page.content)
             buffers: list[str] = []
             buf: list[str] = []
@@ -41,7 +42,7 @@ class LateChunker(BaseChunker):
                     source_uri=page.source_uri,
                     chunk_strategy="late",
                     chunk_embedding=cv,
-                    full_page_embedding=full_embedding,
+                    full_page_embedding=full_doc_vec,
                 ))
                 chunk_index += 1
         return results
